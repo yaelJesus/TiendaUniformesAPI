@@ -7,14 +7,14 @@ namespace TiendaUniformesAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SizeController : ControllerBase
+    public class SchoolController : ControllerBase
     {
         private readonly TiendaUniformesContext _dbContext;
-        public SizeController(TiendaUniformesContext dbContext) { _dbContext = dbContext; }
+        public SchoolController(TiendaUniformesContext dbContext) { _dbContext = dbContext; }
 
-        [HttpPost("CreateUserSize")]
+        [HttpPost("CreateSchool")]
         [ProducesResponseType(typeof(BaseResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> CreateUserSize(Size request)
+        public async Task<IActionResult> CreateSchool(School request)
         {
             BaseResponse response = new BaseResponse
             {
@@ -23,21 +23,20 @@ namespace TiendaUniformesAPI.Controllers
             };
             try
             {
-                if (request.Size1 <= 0 || request.Price <= 0)
+                if (string.IsNullOrEmpty(request.Name))
                 {
                     response.Errors.Add("Ninguno de los campos puede queda vacio.");
                     return StatusCode(response.Status, response);
                 }
 
-                Size newSize = new Size
+                School newSchool = new School
                 {
                     IsActive = true,
-                    Size1 = request.Size1,
-                    Price = request.Price,
+                    Name = request.Name,
                     CreateUser = request.CreateUser,
                     CreateDate = DateOnly.FromDateTime(DateTime.Now)
                 };
-                _dbContext.Sizes.Add(newSize);
+                _dbContext.Schools.Add(newSchool);
                 await _dbContext.SaveChangesAsync();
 
                 response.Status = StatusCodes.Status200OK;
@@ -57,9 +56,9 @@ namespace TiendaUniformesAPI.Controllers
             return StatusCode(response.Status, response);
         }
 
-        [HttpPost("UpdateUserSize")]
+        [HttpPost("UpdateSchool")]
         [ProducesResponseType(typeof(BaseResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> UpdateUserSize(Size request)
+        public async Task<IActionResult> UpdateSchool(School request)
         {
             BaseResponse response = new BaseResponse()
             {
@@ -68,17 +67,16 @@ namespace TiendaUniformesAPI.Controllers
             };
             try
             {
-                var entity = _dbContext.Sizes.FirstOrDefault(x => x.IdS == request.IdS);
+                var entity = _dbContext.Schools.FirstOrDefault(x => x.IdSc == request.IdSc);
                 if (entity != null)
                 {
-                    entity.IdS = request.IdS;
+                    entity.IdSc = request.IdSc;
                     entity.IsActive = request.IsActive;
-                    entity.Size1 = request.Size1;
-                    entity.Price = request.Price;
+                    entity.Name = request.Name;
                     entity.ModifyUser = request.ModifyUser;
                     entity.ModifyDate = DateOnly.FromDateTime(DateTime.Now);
 
-                    _dbContext.Sizes.Update(entity);
+                    _dbContext.Schools.Update(entity);
                     await _dbContext.SaveChangesAsync();
 
                     response.Status = StatusCodes.Status200OK;
@@ -101,9 +99,9 @@ namespace TiendaUniformesAPI.Controllers
             return StatusCode(response.Status, response);
         }
 
-        [HttpPost("DeleteUserSize")]
+        [HttpPost("DeleteSchool")]
         [ProducesResponseType(typeof(BaseResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> DeleteUserSize(int idS)
+        public async Task<IActionResult> DeleteSchool(int idSc)
         {
             BaseResponse response = new BaseResponse()
             {
@@ -112,7 +110,7 @@ namespace TiendaUniformesAPI.Controllers
             };
             try
             {
-                var row = await _dbContext.Sizes.FindAsync(idS);
+                var row = await _dbContext.Schools.FindAsync(idSc);
                 if (row == null)
                 {
                     response.Errors.Add("No se encontró la entidad con el ID proporcionado.");
@@ -120,7 +118,7 @@ namespace TiendaUniformesAPI.Controllers
                 }
 
                 row.IsActive = false;
-                _dbContext.Sizes.Update(row);
+                _dbContext.Schools.Update(row);
                 await _dbContext.SaveChangesAsync();
 
                 response.Status = StatusCodes.Status200OK;
@@ -140,30 +138,31 @@ namespace TiendaUniformesAPI.Controllers
             return StatusCode(response.Status, response);
         }
 
-        [HttpGet("GetUserSizes")]
+        [HttpGet("GetSchool")]
         [ProducesResponseType(typeof(ApiResponse<List<Size>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetUserSizes(int IdU)
+        public async Task<IActionResult> GetSchool(int IdU)
         {
-            ApiResponse<List<Size>> response = new ApiResponse<List<Size>>()
+            ApiResponse<List<School>> response = new ApiResponse<List<School>>()
             {
                 Status = StatusCodes.Status400BadRequest,
                 Errors = new List<string>()
             };
             try
             {
-                List<Size> sizes = new List<Size>();
-                sizes = await _dbContext.Sizes
+                List<School> schools = new List<School>();
+                schools = await _dbContext.Schools
                         .AsNoTracking()
                         .Where(x => x.CreateUser == IdU && x.IsActive)
-                        .Select(x => new Size
+                        .Select(x => new School
                         {
-                            IdS = x.IdS,
-                            Size1 = x.Size1,
-                            Price = x.Price,
-                            CreateUser = x.CreateUser
+                            IdSc = x.IdSc,
+                            Name = x.Name,
+                            CreateUser = x.CreateUser,
+                            CreateDate = x.CreateDate,
+                            IsActive = x.IsActive
                         })
                         .ToListAsync();
-                response.Data = sizes;
+                response.Data = schools;
                 if (response.Data is not null && response.Data.Any())
                 {
                     response.Status = StatusCodes.Status200OK;

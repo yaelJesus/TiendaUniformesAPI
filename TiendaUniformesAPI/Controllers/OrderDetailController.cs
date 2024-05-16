@@ -1,4 +1,4 @@
-Ôªøusing Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TiendaUniformesAPI.Models;
@@ -7,14 +7,14 @@ namespace TiendaUniformesAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SizeController : ControllerBase
+    public class OrderDetailController : ControllerBase
     {
         private readonly TiendaUniformesContext _dbContext;
-        public SizeController(TiendaUniformesContext dbContext) { _dbContext = dbContext; }
+        public OrderDetailController(TiendaUniformesContext dbContext) { _dbContext = dbContext; }
 
-        [HttpPost("CreateUserSize")]
+        [HttpPost("CreateOrderDetail")]
         [ProducesResponseType(typeof(BaseResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> CreateUserSize(Size request)
+        public async Task<IActionResult> CreateOrderDetail(OrderDetail request)
         {
             BaseResponse response = new BaseResponse
             {
@@ -23,25 +23,26 @@ namespace TiendaUniformesAPI.Controllers
             };
             try
             {
-                if (request.Size1 <= 0 || request.Price <= 0)
+                if (request.IdO >= 0 && request.IdG >= 0 && request.Quantitaty >= 0)
                 {
                     response.Errors.Add("Ninguno de los campos puede queda vacio.");
                     return StatusCode(response.Status, response);
                 }
 
-                Size newSize = new Size
+                OrderDetail newOrderDetail = new OrderDetail
                 {
                     IsActive = true,
-                    Size1 = request.Size1,
-                    Price = request.Price,
+                    IdO = request.IdO,
+                    IdG = request.IdG,
+                    Quantitaty = request.Quantitaty,
                     CreateUser = request.CreateUser,
                     CreateDate = DateOnly.FromDateTime(DateTime.Now)
                 };
-                _dbContext.Sizes.Add(newSize);
+                _dbContext.OrderDetails.Add(newOrderDetail);
                 await _dbContext.SaveChangesAsync();
 
                 response.Status = StatusCodes.Status200OK;
-                response.Title = "Creaci√≥n exitosa";
+                response.Title = "CreaciÛn exitosa";
             }
             catch (DbUpdateException)
             {
@@ -51,15 +52,16 @@ namespace TiendaUniformesAPI.Controllers
             catch (Exception ex)
             {
                 response.Status = StatusCodes.Status500InternalServerError;
-                response.Errors.Add("Ocurri√≥ un error, int√©ntalo de nuevo m√°s tarde");
+                response.Errors.Add("OcurriÛ un error, intÈntalo de nuevo m·s tarde");
                 response.Errors.Add(ex.Message);
             }
             return StatusCode(response.Status, response);
         }
 
-        [HttpPost("UpdateUserSize")]
+
+        [HttpPost("UpdateOrderDetail")]
         [ProducesResponseType(typeof(BaseResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> UpdateUserSize(Size request)
+        public async Task<IActionResult> UpdateOrderDetail(OrderDetail request)
         {
             BaseResponse response = new BaseResponse()
             {
@@ -68,24 +70,25 @@ namespace TiendaUniformesAPI.Controllers
             };
             try
             {
-                var entity = _dbContext.Sizes.FirstOrDefault(x => x.IdS == request.IdS);
+                var entity = _dbContext.OrderDetails.FirstOrDefault(x => x.IdOd == request.IdOd);
                 if (entity != null)
                 {
-                    entity.IdS = request.IdS;
+                    entity.IdOd = request.IdOd;
                     entity.IsActive = request.IsActive;
-                    entity.Size1 = request.Size1;
-                    entity.Price = request.Price;
+                    entity.IdO = request.IdO;
+                    entity.IdG = request.IdG;
+                    entity.Quantitaty = request.Quantitaty;
                     entity.ModifyUser = request.ModifyUser;
                     entity.ModifyDate = DateOnly.FromDateTime(DateTime.Now);
 
-                    _dbContext.Sizes.Update(entity);
+                    _dbContext.OrderDetails.Update(entity);
                     await _dbContext.SaveChangesAsync();
 
                     response.Status = StatusCodes.Status200OK;
-                    response.Title = "Actualizaci√≥n √©xitosa";
+                    response.Title = "ActualizaciÛn Èxitosa";
                 }
                 else
-                    response.Errors.Add("No se encontr√≥ la entidad para actualizar");
+                    response.Errors.Add("No se encontrÛ la entidad para actualizar");
             }
             catch (DbUpdateException)
             {
@@ -95,15 +98,15 @@ namespace TiendaUniformesAPI.Controllers
             catch (Exception ex)
             {
                 response.Status = StatusCodes.Status500InternalServerError;
-                response.Errors.Add("Ocurri√≥ un error, int√©ntalo de nuevo m√°s tarde");
+                response.Errors.Add("OcurriÛ un error, intÈntalo de nuevo m·s tarde");
                 response.Errors.Add(ex.Message);
             }
             return StatusCode(response.Status, response);
         }
 
-        [HttpPost("DeleteUserSize")]
+        [HttpPost("DeleteOrderDetail")]
         [ProducesResponseType(typeof(BaseResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> DeleteUserSize(int idS)
+        public async Task<IActionResult> DeleteOrderDetail(int idOd)
         {
             BaseResponse response = new BaseResponse()
             {
@@ -112,19 +115,19 @@ namespace TiendaUniformesAPI.Controllers
             };
             try
             {
-                var row = await _dbContext.Sizes.FindAsync(idS);
+                var row = await _dbContext.OrderDetails.FindAsync(idOd);
                 if (row == null)
                 {
-                    response.Errors.Add("No se encontr√≥ la entidad con el ID proporcionado.");
+                    response.Errors.Add("No se encontrÛ la entidad con el ID proporcionado.");
                     return StatusCode(response.Status, response);
                 }
 
                 row.IsActive = false;
-                _dbContext.Sizes.Update(row);
+                _dbContext.OrderDetails.Update(row);
                 await _dbContext.SaveChangesAsync();
 
                 response.Status = StatusCodes.Status200OK;
-                response.Title = "Eliminaci√≥n  √©xitosa";
+                response.Title = "EliminaciÛn  Èxitosa";
             }
             catch (DbUpdateException)
             {
@@ -134,36 +137,38 @@ namespace TiendaUniformesAPI.Controllers
             catch (Exception ex)
             {
                 response.Status = StatusCodes.Status500InternalServerError;
-                response.Errors.Add("Ocurri√≥ un error, int√©ntalo de nuevo m√°s tarde");
+                response.Errors.Add("OcurriÛ un error, intÈntalo de nuevo m·s tarde");
                 response.Errors.Add(ex.Message);
             }
             return StatusCode(response.Status, response);
         }
 
-        [HttpGet("GetUserSizes")]
+        [HttpGet("GetOrderDetail")]
         [ProducesResponseType(typeof(ApiResponse<List<Size>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetUserSizes(int IdU)
+        public async Task<IActionResult> GetOrderDetail(int IdU)
         {
-            ApiResponse<List<Size>> response = new ApiResponse<List<Size>>()
+            ApiResponse<List<OrderDetail>> response = new ApiResponse<List<OrderDetail>>()
             {
                 Status = StatusCodes.Status400BadRequest,
                 Errors = new List<string>()
             };
             try
             {
-                List<Size> sizes = new List<Size>();
-                sizes = await _dbContext.Sizes
+                List<OrderDetail> OrderDetails = new List<OrderDetail>();
+                OrderDetails = await _dbContext.OrderDetails
                         .AsNoTracking()
                         .Where(x => x.CreateUser == IdU && x.IsActive)
-                        .Select(x => new Size
+                        .Select(x => new OrderDetail
                         {
-                            IdS = x.IdS,
-                            Size1 = x.Size1,
-                            Price = x.Price,
-                            CreateUser = x.CreateUser
+                            IdO = x.IdO,
+                            IdG = x.IdG,
+                            Quantitaty = x.Quantitaty,
+                            CreateUser = x.CreateUser,
+                            CreateDate = x.CreateDate,
+                            IsActive = x.IsActive
                         })
                         .ToListAsync();
-                response.Data = sizes;
+                response.Data = OrderDetails;
                 if (response.Data is not null && response.Data.Any())
                 {
                     response.Status = StatusCodes.Status200OK;
@@ -175,7 +180,7 @@ namespace TiendaUniformesAPI.Controllers
             catch (Exception ex)
             {
                 response.Status = StatusCodes.Status500InternalServerError;
-                response.Errors.Add("Ocurri√≥ un error, int√©ntalo de nuevo m√°s tarde");
+                response.Errors.Add("OcurriÛ un error, intÈntalo de nuevo m·s tarde");
                 response.Errors.Add(ex.Message);
             }
             return StatusCode(response.Status, response);
