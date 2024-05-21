@@ -24,25 +24,24 @@ namespace TiendaUniformesAPI.Controllers
             try
             {
                 if (request.IdSc >= 0 && request.IdG >= 0 && request.Quantitaty >= 0)
+                    response.Errors.Add("Ninguno de los campos puede quedar vacio.");
+                else
                 {
-                    response.Errors.Add("Ninguno de los campos puede queda vacio.");
-                    return StatusCode(response.Status, response);
+                    Inventory newInventory = new Inventory
+                    {
+                        IsActive = true,
+                        IdSc = request.IdSc,
+                        IdG = request.IdG,
+                        Quantitaty = request.Quantitaty,
+                        CreateUser = request.CreateUser,
+                        CreateDate = DateOnly.FromDateTime(DateTime.Now)
+                    };
+                    _dbContext.Inventories.Add(newInventory);
+                    await _dbContext.SaveChangesAsync();
+
+                    response.Status = StatusCodes.Status200OK;
+                    response.Title = "Creación exitosa";
                 }
-
-                Inventory newInventory = new Inventory
-                {
-                    IsActive = true,
-                    IdSc = request.IdSc,
-                    IdG = request.IdG,
-                    Quantitaty = request.Quantitaty,
-                    CreateUser = request.CreateUser,
-                    CreateDate = DateOnly.FromDateTime(DateTime.Now)
-                };
-                _dbContext.Inventories.Add(newInventory);
-                await _dbContext.SaveChangesAsync();
-
-                response.Status = StatusCodes.Status200OK;
-                response.Title = "Creación exitosa";
             }
             catch (DbUpdateException)
             {
@@ -117,17 +116,16 @@ namespace TiendaUniformesAPI.Controllers
             {
                 var row = await _dbContext.Inventories.FindAsync(idI);
                 if (row == null)
-                {
                     response.Errors.Add("No se encontró la entidad con el ID proporcionado.");
-                    return StatusCode(response.Status, response);
+                else
+                {
+                    row.IsActive = false;
+                    _dbContext.Inventories.Update(row);
+                    await _dbContext.SaveChangesAsync();
+
+                    response.Status = StatusCodes.Status200OK;
+                    response.Title = "Eliminación  éxitosa";
                 }
-
-                row.IsActive = false;
-                _dbContext.Inventories.Update(row);
-                await _dbContext.SaveChangesAsync();
-
-                response.Status = StatusCodes.Status200OK;
-                response.Title = "Eliminación  éxitosa";
             }
             catch (DbUpdateException)
             {

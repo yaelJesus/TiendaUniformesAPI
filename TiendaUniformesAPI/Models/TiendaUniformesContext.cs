@@ -185,7 +185,7 @@ public partial class TiendaUniformesContext : DbContext
         {
             entity.HasKey(e => e.IdU).HasName("PK__User__DC501A1B7B7F2445");
 
-            entity.ToTable("[User]");
+            entity.ToTable("Account");
 
             entity.Property(e => e.IdU).HasColumnName("idU");
             entity.Property(e => e.Email)

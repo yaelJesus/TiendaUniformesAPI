@@ -24,23 +24,22 @@ namespace TiendaUniformesAPI.Controllers
             try
             {
                 if (string.IsNullOrEmpty(request.Name))
+                    response.Errors.Add("Ninguno de los campos puede quedar vacio.");
+                else
                 {
-                    response.Errors.Add("Ninguno de los campos puede queda vacio.");
-                    return StatusCode(response.Status, response);
+                    School newSchool = new School
+                    {
+                        IsActive = true,
+                        Name = request.Name,
+                        CreateUser = request.CreateUser,
+                        CreateDate = DateOnly.FromDateTime(DateTime.Now)
+                    };
+                    _dbContext.Schools.Add(newSchool);
+                    await _dbContext.SaveChangesAsync();
+
+                    response.Status = StatusCodes.Status200OK;
+                    response.Title = "Creación exitosa";
                 }
-
-                School newSchool = new School
-                {
-                    IsActive = true,
-                    Name = request.Name,
-                    CreateUser = request.CreateUser,
-                    CreateDate = DateOnly.FromDateTime(DateTime.Now)
-                };
-                _dbContext.Schools.Add(newSchool);
-                await _dbContext.SaveChangesAsync();
-
-                response.Status = StatusCodes.Status200OK;
-                response.Title = "Creación exitosa";
             }
             catch (DbUpdateException)
             {
@@ -112,17 +111,16 @@ namespace TiendaUniformesAPI.Controllers
             {
                 var row = await _dbContext.Schools.FindAsync(idSc);
                 if (row == null)
-                {
                     response.Errors.Add("No se encontró la entidad con el ID proporcionado.");
-                    return StatusCode(response.Status, response);
+                else
+                {
+                    row.IsActive = false;
+                    _dbContext.Schools.Update(row);
+                    await _dbContext.SaveChangesAsync();
+
+                    response.Status = StatusCodes.Status200OK;
+                    response.Title = "Eliminación  éxitosa";
                 }
-
-                row.IsActive = false;
-                _dbContext.Schools.Update(row);
-                await _dbContext.SaveChangesAsync();
-
-                response.Status = StatusCodes.Status200OK;
-                response.Title = "Eliminación  éxitosa";
             }
             catch (DbUpdateException)
             {

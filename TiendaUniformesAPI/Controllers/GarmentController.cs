@@ -24,26 +24,25 @@ namespace TiendaUniformesAPI.Controllers
             try
             {
                 if (string.IsNullOrEmpty(request.Type) && request.IdS >= 0 && request.IdSc >= 0)
+                    response.Errors.Add("Ninguno de los campos puede quedar vacio.");
+                else
                 {
-                    response.Errors.Add("Ninguno de los campos puede queda vacio.");
-                    return StatusCode(response.Status, response);
+                    Garment newGarment = new Garment
+                    {
+                        IsActive = true,
+                        Type = request.Type,
+                        Desctiption = request.Desctiption,
+                        IdS = request.IdS,
+                        IdSc = request.IdSc,
+                        CreateUser = request.CreateUser,
+                        CreateDate = DateOnly.FromDateTime(DateTime.Now)
+                    };
+                    _dbContext.Garments.Add(newGarment);
+                    await _dbContext.SaveChangesAsync();
+
+                    response.Status = StatusCodes.Status200OK;
+                    response.Title = "Creación exitosa";
                 }
-
-                Garment newGarment = new Garment
-                {
-                    IsActive = true,
-                    Type = request.Type,
-                    Desctiption = request.Desctiption,
-                    IdS = request.IdS,
-                    IdSc = request.IdSc,
-                    CreateUser = request.CreateUser,
-                    CreateDate = DateOnly.FromDateTime(DateTime.Now)
-                };
-                _dbContext.Garments.Add(newGarment);
-                await _dbContext.SaveChangesAsync();
-
-                response.Status = StatusCodes.Status200OK;
-                response.Title = "Creación exitosa";
             }
             catch (DbUpdateException)
             {
@@ -119,17 +118,16 @@ namespace TiendaUniformesAPI.Controllers
             {
                 var row = await _dbContext.Garments.FindAsync(idG);
                 if (row == null)
-                {
                     response.Errors.Add("No se encontró la entidad con el ID proporcionado.");
-                    return StatusCode(response.Status, response);
+                else
+                {
+                    row.IsActive = false;
+                    _dbContext.Garments.Update(row);
+                    await _dbContext.SaveChangesAsync();
+
+                    response.Status = StatusCodes.Status200OK;
+                    response.Title = "Eliminación  éxitosa";
                 }
-
-                row.IsActive = false;
-                _dbContext.Garments.Update(row);
-                await _dbContext.SaveChangesAsync();
-
-                response.Status = StatusCodes.Status200OK;
-                response.Title = "Eliminación  éxitosa";
             }
             catch (DbUpdateException)
             {
