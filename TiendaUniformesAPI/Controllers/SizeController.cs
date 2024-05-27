@@ -112,7 +112,7 @@ namespace TiendaUniformesAPI.Controllers
             try
             {
                 var row = await _dbContext.Sizes.FindAsync(idS);
-                if (row == null)
+                if (row == null || !row.IsActive)
                     response.Errors.Add("No se encontró la entidad con el ID proporcionado.");
                 else
                 {
@@ -158,7 +158,11 @@ namespace TiendaUniformesAPI.Controllers
                             IdS = x.IdS,
                             Size1 = x.Size1,
                             Price = x.Price,
-                            CreateUser = x.CreateUser
+                            CreateUser = x.CreateUser,
+                            CreateDate = x.CreateDate,
+                            ModifyUser = x.ModifyUser,
+                            ModifyDate = x.ModifyDate,
+                            IsActive = x.IsActive
                         })
                         .ToListAsync();
                 response.Data = sizes;

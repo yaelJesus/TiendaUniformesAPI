@@ -115,7 +115,7 @@ namespace TiendaUniformesAPI.Controllers
             try
             {
                 var row = await _dbContext.OrderDetails.FindAsync(idOd);
-                if (row == null)
+                if (row == null || !row.IsActive)
                     response.Errors.Add("No se encontró la entidad con el ID proporcionado.");
                 else
                 {
@@ -163,6 +163,8 @@ namespace TiendaUniformesAPI.Controllers
                             Quantitaty = x.Quantitaty,
                             CreateUser = x.CreateUser,
                             CreateDate = x.CreateDate,
+                            ModifyUser = x.ModifyUser,
+                            ModifyDate = x.ModifyDate,
                             IsActive = x.IsActive
                         })
                         .ToListAsync();
