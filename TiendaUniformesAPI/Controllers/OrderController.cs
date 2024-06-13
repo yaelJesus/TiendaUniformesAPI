@@ -144,7 +144,7 @@ namespace TiendaUniformesAPI.Controllers
         }
 
         [HttpGet("GetOrder")]
-        [ProducesResponseType(typeof(ApiResponse<List<Size>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<List<Order>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetOrder(int IdU)
         {
             ApiResponse<List<Order>> response = new ApiResponse<List<Order>>()

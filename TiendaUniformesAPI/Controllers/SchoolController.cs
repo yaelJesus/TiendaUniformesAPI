@@ -137,7 +137,7 @@ namespace TiendaUniformesAPI.Controllers
         }
 
         [HttpGet("GetSchool")]
-        [ProducesResponseType(typeof(ApiResponse<List<Size>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<List<School>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSchool(int IdU)
         {
             ApiResponse<List<School>> response = new ApiResponse<List<School>>()

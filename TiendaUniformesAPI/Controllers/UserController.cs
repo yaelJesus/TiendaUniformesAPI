@@ -131,7 +131,7 @@ namespace TiendaUniformesAPI.Controllers
         }
 
         [HttpPost("UpdateUser")]
-        [ProducesResponseType(typeof(ApiResponse<User>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateUser(User request)
         {
             BaseResponse response = new BaseResponse
@@ -173,7 +173,7 @@ namespace TiendaUniformesAPI.Controllers
         }
 
         [HttpPost("DeleteUser")]
-        [ProducesResponseType(typeof(ApiResponse<User>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteUser(int idU)
         {
             BaseResponse response = new BaseResponse()
