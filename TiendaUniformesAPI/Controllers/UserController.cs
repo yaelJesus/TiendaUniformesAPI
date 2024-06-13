@@ -89,7 +89,7 @@ namespace TiendaUniformesAPI.Controllers
             try
             {
                 var loginUser = await _dbContext.Users.AsNoTracking()
-                    .Where(x => x.Email == request.Email && x.IsActive)
+                    .Where(x => (x.Email == request.Email || x.UserName == request.UserName) && x.IsActive)
                     .Select(x => new User()
                     {
                         IdU = x.IdU,
@@ -103,10 +103,16 @@ namespace TiendaUniformesAPI.Controllers
                     response.Errors.Add("Usuario o contraseña inválidos");
                 else
                 {
-                    response.Data.Pass = string.Empty;
-                    response.Data = loginUser;
-                    response.Title = "Inicio de sesión éxitoso";
-                    response.Status = StatusCodes.Status200OK;
+                    bool validpass = BCrypt.Net.BCrypt.Verify(request.Pass, loginUser.Pass);
+                    if (validpass)
+                    {
+                        response.Data.Pass = string.Empty;
+                        response.Data = loginUser;
+                        response.Title = "Inicio de sesión éxitoso";
+                        response.Status = StatusCodes.Status200OK;
+                    }
+                    else
+                        response.Errors.Add("Usuario o contraseña inválidos");
                 }
             }
             catch (DbUpdateException)
