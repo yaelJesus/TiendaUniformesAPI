@@ -72,8 +72,6 @@ namespace TiendaUniformesAPI.Controllers
                 var entity = _dbContext.Inventories.FirstOrDefault(x => x.IdI == request.IdI);
                 if (entity != null)
                 {
-                    entity.IdI = request.IdI;
-                    entity.IsActive = request.IsActive;
                     entity.IdSc = request.IdSc;
                     entity.IdG = request.IdG;
                     entity.Quantitaty = request.Quantitaty;
@@ -160,12 +158,7 @@ namespace TiendaUniformesAPI.Controllers
                         {
                             IdSc = x.IdSc,
                             IdG = x.IdG,
-                            Quantitaty = x.Quantitaty,
-                            CreateUser = x.CreateUser,
-                            CreateDate = x.CreateDate,
-                            ModifyUser = x.ModifyUser,
-                            ModifyDate = x.ModifyDate,
-                            IsActive = x.IsActive
+                            Quantitaty = x.Quantitaty
                         })
                         .ToListAsync();
                 response.Data = Inventorys;

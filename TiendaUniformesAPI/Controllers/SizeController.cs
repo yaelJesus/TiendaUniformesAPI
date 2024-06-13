@@ -70,8 +70,6 @@ namespace TiendaUniformesAPI.Controllers
                 var entity = _dbContext.Sizes.FirstOrDefault(x => x.IdS == request.IdS);
                 if (entity != null)
                 {
-                    entity.IdS = request.IdS;
-                    entity.IsActive = request.IsActive;
                     entity.Size1 = request.Size1;
                     entity.Price = request.Price;
                     entity.ModifyUser = request.ModifyUser;
@@ -157,12 +155,7 @@ namespace TiendaUniformesAPI.Controllers
                         {
                             IdS = x.IdS,
                             Size1 = x.Size1,
-                            Price = x.Price,
-                            CreateUser = x.CreateUser,
-                            CreateDate = x.CreateDate,
-                            ModifyUser = x.ModifyUser,
-                            ModifyDate = x.ModifyDate,
-                            IsActive = x.IsActive
+                            Price = x.Price
                         })
                         .ToListAsync();
                 response.Data = sizes;

@@ -71,8 +71,6 @@ namespace TiendaUniformesAPI.Controllers
                 var entity = _dbContext.Customers.FirstOrDefault(x => x.IdC == request.IdC);
                 if (entity != null)
                 {
-                    entity.IdC = request.IdC;
-                    entity.IsActive = request.IsActive;
                     entity.Name = request.Name;
                     entity.Phone = request.Phone;
                     entity.ModifyUser = request.ModifyUser;
@@ -158,12 +156,7 @@ namespace TiendaUniformesAPI.Controllers
                         {
                             IdC = x.IdC,
                             Name = x.Name,
-                            Phone = x.Phone,
-                            CreateUser = x.CreateUser,
-                            CreateDate = x.CreateDate,
-                            ModifyUser = x.ModifyUser,
-                            ModifyDate = x.ModifyDate,
-                            IsActive = x.IsActive
+                            Phone = x.Phone
                         })
                         .ToListAsync();
                 response.Data = customers;

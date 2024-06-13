@@ -69,8 +69,6 @@ namespace TiendaUniformesAPI.Controllers
                 var entity = _dbContext.Schools.FirstOrDefault(x => x.IdSc == request.IdSc);
                 if (entity != null)
                 {
-                    entity.IdSc = request.IdSc;
-                    entity.IsActive = request.IsActive;
                     entity.Name = request.Name;
                     entity.ModifyUser = request.ModifyUser;
                     entity.ModifyDate = DateOnly.FromDateTime(DateTime.Now);
@@ -154,12 +152,7 @@ namespace TiendaUniformesAPI.Controllers
                         .Select(x => new School
                         {
                             IdSc = x.IdSc,
-                            Name = x.Name,
-                            CreateUser = x.CreateUser,
-                            CreateDate = x.CreateDate,
-                            ModifyUser = x.ModifyUser,
-                            ModifyDate = x.ModifyDate,
-                            IsActive = x.IsActive
+                            Name = x.Name
                         })
                         .ToListAsync();
                 response.Data = schools;

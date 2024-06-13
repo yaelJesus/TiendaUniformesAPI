@@ -141,12 +141,14 @@ namespace TiendaUniformesAPI.Controllers
             };
             try
             {
+                string hashPass = BCrypt.Net.BCrypt.HashPassword(request.Pass);
                 var entity = await _dbContext.Users.FirstOrDefaultAsync(x => x.IdU == request.IdU);
                 if (entity != null)
                 {
-                    entity.IdU = request.IdU;
+                    bool validpass = BCrypt.Net.BCrypt.Verify(request.Pass, entity.Pass);
                     entity.UserName = request.UserName;
                     entity.Email = request.Email;
+                    entity.Pass =  validpass ? request.Pass : hashPass;
 
                     _dbContext.Users.Update(entity);
                     await _dbContext.SaveChangesAsync();
