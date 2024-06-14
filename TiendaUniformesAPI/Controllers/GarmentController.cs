@@ -158,6 +158,7 @@ namespace TiendaUniformesAPI.Controllers
                         .Where(x => x.CreateUser == IdU && x.IsActive)
                         .Select(x => new Garment
                         {
+                            IdG = x.IdG,
                             Type = x.Type,
                             Desctiption = x.Desctiption,
                             IdS = x.IdS,

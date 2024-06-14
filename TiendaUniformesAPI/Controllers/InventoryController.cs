@@ -23,7 +23,7 @@ namespace TiendaUniformesAPI.Controllers
             };
             try
             {
-                if (request.IdSc >= 0 && request.IdG >= 0 && request.Quantitaty >= 0)
+                if (request.IdSc <= 0 || request.IdG <= 0 || request.Quantitaty <= 0)
                     response.Errors.Add("Ninguno de los campos puede quedar vacio.");
                 else
                 {
@@ -156,6 +156,7 @@ namespace TiendaUniformesAPI.Controllers
                         .Where(x => x.CreateUser == IdU && x.IsActive)
                         .Select(x => new Inventory
                         {
+                            IdI = x.IdI,
                             IdSc = x.IdSc,
                             IdG = x.IdG,
                             Quantitaty = x.Quantitaty

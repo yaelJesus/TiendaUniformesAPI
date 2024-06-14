@@ -156,6 +156,7 @@ namespace TiendaUniformesAPI.Controllers
                         .Where(x => x.CreateUser == IdU && x.IsActive)
                         .Select(x => new OrderDetail
                         {
+                            IdOd = x.IdOd,
                             IdO = x.IdO,
                             IdG = x.IdG,
                             Quantitaty = x.Quantitaty

@@ -24,7 +24,7 @@ namespace TiendaUniformesAPI.Controllers
             };
             try
             {
-                if (request.IdC >= 0 && request.TotalPrice >= 0)
+                if (request.IdC <= 0 || request.TotalPrice <= 0)
                     response.Errors.Add("Ninguno de los campos puede quedar vacio.");
                 else
                 {
@@ -158,7 +158,8 @@ namespace TiendaUniformesAPI.Controllers
                         .Where(x => x.CreateUser == IdU && x.IsActive)
                         .Select(x => new Order
                         {
-                            DateOrder = DateOnly.FromDateTime(DateTime.Now),
+                            IdO = x.IdO,
+                            DateOrder = x.DateOrder,
                             DeadLine = x.DeadLine,
                             IdC = x.IdC,
                             TotalPrice = x.TotalPrice

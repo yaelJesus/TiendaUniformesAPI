@@ -12,9 +12,9 @@ namespace TiendaUniformesAPI.Controllers
         private readonly TiendaUniformesContext _dbContext;
         public SizeController(TiendaUniformesContext dbContext) { _dbContext = dbContext; }
 
-        [HttpPost("CreateUserSize")]
+        [HttpPost("CreateSize")]
         [ProducesResponseType(typeof(BaseResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> CreateUserSize(Size request)
+        public async Task<IActionResult> CreateSize(Size request)
         {
             BaseResponse response = new BaseResponse
             {
@@ -56,9 +56,9 @@ namespace TiendaUniformesAPI.Controllers
             return StatusCode(response.Status, response);
         }
 
-        [HttpPost("UpdateUserSize")]
+        [HttpPost("UpdateSize")]
         [ProducesResponseType(typeof(BaseResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> UpdateUserSize(Size request)
+        public async Task<IActionResult> UpdateSize(Size request)
         {
             BaseResponse response = new BaseResponse()
             {
@@ -98,9 +98,9 @@ namespace TiendaUniformesAPI.Controllers
             return StatusCode(response.Status, response);
         }
 
-        [HttpPost("DeleteUserSize")]
+        [HttpPost("DeleteSize")]
         [ProducesResponseType(typeof(BaseResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> DeleteUserSize(int idS)
+        public async Task<IActionResult> DeleteSize(int idS)
         {
             BaseResponse response = new BaseResponse()
             {
@@ -136,9 +136,9 @@ namespace TiendaUniformesAPI.Controllers
             return StatusCode(response.Status, response);
         }
 
-        [HttpGet("GetUserSizes")]
+        [HttpGet("GetSizes")]
         [ProducesResponseType(typeof(ApiResponse<List<Size>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetUserSizes(int IdU)
+        public async Task<IActionResult> GetSizes(int IdU)
         {
             ApiResponse<List<Size>> response = new ApiResponse<List<Size>>()
             {
