@@ -72,8 +72,6 @@ namespace TiendaUniformesAPI.Controllers
                 var entity = _dbContext.Inventories.FirstOrDefault(x => x.IdI == request.IdI);
                 if (entity != null)
                 {
-                    entity.IdI = request.IdI;
-                    entity.IsActive = request.IsActive;
                     entity.IdSc = request.IdSc;
                     entity.IdG = request.IdG;
                     entity.Quantitaty = request.Quantitaty;
@@ -115,7 +113,7 @@ namespace TiendaUniformesAPI.Controllers
             try
             {
                 var row = await _dbContext.Inventories.FindAsync(idI);
-                if (row == null)
+                if (row == null || !row.IsActive)
                     response.Errors.Add("No se encontró la entidad con el ID proporcionado.");
                 else
                 {
@@ -142,7 +140,7 @@ namespace TiendaUniformesAPI.Controllers
         }
 
         [HttpGet("GetInventory")]
-        [ProducesResponseType(typeof(ApiResponse<List<Size>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<List<Inventory>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetInventory(int IdU)
         {
             ApiResponse<List<Inventory>> response = new ApiResponse<List<Inventory>>()
@@ -160,10 +158,7 @@ namespace TiendaUniformesAPI.Controllers
                         {
                             IdSc = x.IdSc,
                             IdG = x.IdG,
-                            Quantitaty = x.Quantitaty,
-                            CreateUser = x.CreateUser,
-                            CreateDate = x.CreateDate,
-                            IsActive = x.IsActive
+                            Quantitaty = x.Quantitaty
                         })
                         .ToListAsync();
                 response.Data = Inventorys;

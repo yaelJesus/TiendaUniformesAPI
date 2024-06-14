@@ -89,7 +89,7 @@ namespace TiendaUniformesAPI.Controllers
             try
             {
                 var loginUser = await _dbContext.Users.AsNoTracking()
-                    .Where(x => x.Email == request.Email && x.IsActive)
+                    .Where(x => (x.Email == request.Email || x.UserName == request.UserName) && x.IsActive)
                     .Select(x => new User()
                     {
                         IdU = x.IdU,
@@ -103,10 +103,16 @@ namespace TiendaUniformesAPI.Controllers
                     response.Errors.Add("Usuario o contraseña inválidos");
                 else
                 {
-                    response.Data.Pass = string.Empty;
-                    response.Data = loginUser;
-                    response.Title = "Inicio de sesión éxitoso";
-                    response.Status = StatusCodes.Status200OK;
+                    bool validpass = BCrypt.Net.BCrypt.Verify(request.Pass, loginUser.Pass);
+                    if (validpass)
+                    {
+                        response.Data.Pass = string.Empty;
+                        response.Data = loginUser;
+                        response.Title = "Inicio de sesión éxitoso";
+                        response.Status = StatusCodes.Status200OK;
+                    }
+                    else
+                        response.Errors.Add("Usuario o contraseña inválidos");
                 }
             }
             catch (DbUpdateException)
@@ -125,7 +131,7 @@ namespace TiendaUniformesAPI.Controllers
         }
 
         [HttpPost("UpdateUser")]
-        [ProducesResponseType(typeof(ApiResponse<User>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateUser(User request)
         {
             BaseResponse response = new BaseResponse
@@ -135,12 +141,14 @@ namespace TiendaUniformesAPI.Controllers
             };
             try
             {
+                string hashPass = BCrypt.Net.BCrypt.HashPassword(request.Pass);
                 var entity = await _dbContext.Users.FirstOrDefaultAsync(x => x.IdU == request.IdU);
                 if (entity != null)
                 {
-                    entity.IdU = request.IdU;
+                    bool validpass = BCrypt.Net.BCrypt.Verify(request.Pass, entity.Pass);
                     entity.UserName = request.UserName;
                     entity.Email = request.Email;
+                    entity.Pass =  validpass ? request.Pass : hashPass;
 
                     _dbContext.Users.Update(entity);
                     await _dbContext.SaveChangesAsync();
@@ -167,7 +175,7 @@ namespace TiendaUniformesAPI.Controllers
         }
 
         [HttpPost("DeleteUser")]
-        [ProducesResponseType(typeof(ApiResponse<User>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteUser(int idU)
         {
             BaseResponse response = new BaseResponse()
@@ -178,7 +186,7 @@ namespace TiendaUniformesAPI.Controllers
             try
             {
                 var row = await _dbContext.Users.FindAsync(idU);
-                if (row == null)
+                if (row == null || !row.IsActive)
                     response.Errors.Add("No se encontró la entidad con el ID proporcionado.");
                 else
                 {

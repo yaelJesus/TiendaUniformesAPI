@@ -73,8 +73,6 @@ namespace TiendaUniformesAPI.Controllers
                 var entity = _dbContext.Garments.FirstOrDefault(x => x.IdG == request.IdG);
                 if (entity != null)
                 {
-                    entity.IdG = request.IdG;
-                    entity.IsActive = request.IsActive;
                     entity.Type = request.Type;
                     entity.Desctiption = request.Desctiption;
                     entity.IdS = request.IdS;
@@ -117,7 +115,7 @@ namespace TiendaUniformesAPI.Controllers
             try
             {
                 var row = await _dbContext.Garments.FindAsync(idG);
-                if (row == null)
+                if (row == null || !row.IsActive)
                     response.Errors.Add("No se encontró la entidad con el ID proporcionado.");
                 else
                 {
@@ -144,7 +142,7 @@ namespace TiendaUniformesAPI.Controllers
         }
 
         [HttpGet("GetGarment")]
-        [ProducesResponseType(typeof(ApiResponse<List<Size>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<List<Garment>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetGarment(int IdU)
         {
             ApiResponse<List<Garment>> response = new ApiResponse<List<Garment>>()
@@ -163,10 +161,7 @@ namespace TiendaUniformesAPI.Controllers
                             Type = x.Type,
                             Desctiption = x.Desctiption,
                             IdS = x.IdS,
-                            IdSc = x.IdSc,
-                            CreateUser = x.CreateUser,
-                            CreateDate = x.CreateDate,
-                            IsActive = x.IsActive
+                            IdSc = x.IdSc
                         })
                         .ToListAsync();
                 response.Data = Garments;

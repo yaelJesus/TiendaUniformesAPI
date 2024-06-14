@@ -23,7 +23,7 @@ public partial class TiendaUniformesContext : DbContext
     public virtual DbSet<Size> Sizes { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
-
+    
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlServer("Server=LAPTOP-FRFOQVMF;Database=TiendaUniformes;Trusted_Connection=True;TrustServerCertificate=True;");
@@ -37,7 +37,7 @@ public partial class TiendaUniformesContext : DbContext
 
             entity.ToTable("Customer");
 
-            entity.Property(e => e.IdC).HasColumnName("idC");
+            entity.Property(e => e.IdC).HasColumnName("idC").ValueGeneratedOnAdd();
             entity.Property(e => e.CreateDate).HasColumnName("createDate");
             entity.Property(e => e.CreateUser).HasColumnName("createUser");
             entity.Property(e => e.IsActive)
@@ -61,7 +61,7 @@ public partial class TiendaUniformesContext : DbContext
 
             entity.ToTable("Garment");
 
-            entity.Property(e => e.IdG).HasColumnName("idG");
+            entity.Property(e => e.IdG).HasColumnName("idG").ValueGeneratedOnAdd();
             entity.Property(e => e.CreateDate).HasColumnName("createDate");
             entity.Property(e => e.CreateUser).HasColumnName("createUser");
             entity.Property(e => e.Desctiption)
@@ -87,7 +87,7 @@ public partial class TiendaUniformesContext : DbContext
 
             entity.ToTable("Inventory");
 
-            entity.Property(e => e.IdI).HasColumnName("idI");
+            entity.Property(e => e.IdI).HasColumnName("idI").ValueGeneratedOnAdd();
             entity.Property(e => e.CreateDate).HasColumnName("createDate");
             entity.Property(e => e.CreateUser).HasColumnName("createUser");
             entity.Property(e => e.IdG).HasColumnName("idG");
@@ -106,7 +106,7 @@ public partial class TiendaUniformesContext : DbContext
 
             entity.ToTable("Order");
 
-            entity.Property(e => e.IdO).HasColumnName("idO");
+            entity.Property(e => e.IdO).HasColumnName("idO").ValueGeneratedOnAdd();
             entity.Property(e => e.CreateDate).HasColumnName("createDate");
             entity.Property(e => e.CreateUser).HasColumnName("createUser");
             entity.Property(e => e.DateOrder).HasColumnName("dateOrder");
@@ -128,7 +128,7 @@ public partial class TiendaUniformesContext : DbContext
 
             entity.ToTable("OrderDetail");
 
-            entity.Property(e => e.IdOd).HasColumnName("idOd");
+            entity.Property(e => e.IdOd).HasColumnName("idOd").ValueGeneratedOnAdd();
             entity.Property(e => e.CreateDate).HasColumnName("createDate");
             entity.Property(e => e.CreateUser).HasColumnName("createUser");
             entity.Property(e => e.IdG).HasColumnName("idG");
@@ -147,7 +147,9 @@ public partial class TiendaUniformesContext : DbContext
 
             entity.ToTable("School");
 
-            entity.Property(e => e.IdSc).HasColumnName("idSc");
+            entity.Property(e => e.IdSc)
+                .HasColumnName("idSc")
+                .ValueGeneratedOnAdd();
             entity.Property(e => e.CreateDate).HasColumnName("createDate");
             entity.Property(e => e.CreateUser).HasColumnName("createUser");
             entity.Property(e => e.IsActive)
@@ -167,7 +169,7 @@ public partial class TiendaUniformesContext : DbContext
 
             entity.ToTable("Size");
 
-            entity.Property(e => e.IdS).HasColumnName("idS");
+            entity.Property(e => e.IdS).HasColumnName("idS").ValueGeneratedOnAdd();
             entity.Property(e => e.CreateDate).HasColumnName("createDate");
             entity.Property(e => e.CreateUser).HasColumnName("createUser");
             entity.Property(e => e.IsActive)
@@ -187,7 +189,7 @@ public partial class TiendaUniformesContext : DbContext
 
             entity.ToTable("Account");
 
-            entity.Property(e => e.IdU).HasColumnName("idU");
+            entity.Property(e => e.IdU).HasColumnName("idU").ValueGeneratedOnAdd();
             entity.Property(e => e.Email)
                 .HasMaxLength(100)
                 .IsUnicode(false)

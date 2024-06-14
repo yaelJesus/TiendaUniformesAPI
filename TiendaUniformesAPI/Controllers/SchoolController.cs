@@ -69,8 +69,6 @@ namespace TiendaUniformesAPI.Controllers
                 var entity = _dbContext.Schools.FirstOrDefault(x => x.IdSc == request.IdSc);
                 if (entity != null)
                 {
-                    entity.IdSc = request.IdSc;
-                    entity.IsActive = request.IsActive;
                     entity.Name = request.Name;
                     entity.ModifyUser = request.ModifyUser;
                     entity.ModifyDate = DateOnly.FromDateTime(DateTime.Now);
@@ -110,7 +108,7 @@ namespace TiendaUniformesAPI.Controllers
             try
             {
                 var row = await _dbContext.Schools.FindAsync(idSc);
-                if (row == null)
+                if (row == null || !row.IsActive)
                     response.Errors.Add("No se encontró la entidad con el ID proporcionado.");
                 else
                 {
@@ -137,7 +135,7 @@ namespace TiendaUniformesAPI.Controllers
         }
 
         [HttpGet("GetSchool")]
-        [ProducesResponseType(typeof(ApiResponse<List<Size>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<List<School>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSchool(int IdU)
         {
             ApiResponse<List<School>> response = new ApiResponse<List<School>>()
@@ -154,10 +152,7 @@ namespace TiendaUniformesAPI.Controllers
                         .Select(x => new School
                         {
                             IdSc = x.IdSc,
-                            Name = x.Name,
-                            CreateUser = x.CreateUser,
-                            CreateDate = x.CreateDate,
-                            IsActive = x.IsActive
+                            Name = x.Name
                         })
                         .ToListAsync();
                 response.Data = schools;

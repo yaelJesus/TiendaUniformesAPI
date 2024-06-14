@@ -70,8 +70,6 @@ namespace TiendaUniformesAPI.Controllers
                 var entity = _dbContext.Sizes.FirstOrDefault(x => x.IdS == request.IdS);
                 if (entity != null)
                 {
-                    entity.IdS = request.IdS;
-                    entity.IsActive = request.IsActive;
                     entity.Size1 = request.Size1;
                     entity.Price = request.Price;
                     entity.ModifyUser = request.ModifyUser;
@@ -112,7 +110,7 @@ namespace TiendaUniformesAPI.Controllers
             try
             {
                 var row = await _dbContext.Sizes.FindAsync(idS);
-                if (row == null)
+                if (row == null || !row.IsActive)
                     response.Errors.Add("No se encontró la entidad con el ID proporcionado.");
                 else
                 {
@@ -157,8 +155,7 @@ namespace TiendaUniformesAPI.Controllers
                         {
                             IdS = x.IdS,
                             Size1 = x.Size1,
-                            Price = x.Price,
-                            CreateUser = x.CreateUser
+                            Price = x.Price
                         })
                         .ToListAsync();
                 response.Data = sizes;

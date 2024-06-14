@@ -71,8 +71,6 @@ namespace TiendaUniformesAPI.Controllers
                 var entity = _dbContext.Customers.FirstOrDefault(x => x.IdC == request.IdC);
                 if (entity != null)
                 {
-                    entity.IdC = request.IdC;
-                    entity.IsActive = request.IsActive;
                     entity.Name = request.Name;
                     entity.Phone = request.Phone;
                     entity.ModifyUser = request.ModifyUser;
@@ -113,7 +111,7 @@ namespace TiendaUniformesAPI.Controllers
             try
             {
                 var row = await _dbContext.Customers.FindAsync(idC);
-                if (row == null)
+                if (row == null || !row.IsActive)
                     response.Errors.Add("No se encontró la entidad con el ID proporcionado.");
                 else
                 {
@@ -140,7 +138,7 @@ namespace TiendaUniformesAPI.Controllers
         }
 
         [HttpGet("GetCustomer")]
-        [ProducesResponseType(typeof(ApiResponse<List<Size>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<List<Customer>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetCustomer(int IdU)
         {
             ApiResponse<List<Customer>> response = new ApiResponse<List<Customer>>()
@@ -158,10 +156,7 @@ namespace TiendaUniformesAPI.Controllers
                         {
                             IdC = x.IdC,
                             Name = x.Name,
-                            Phone = x.Phone,
-                            CreateUser = x.CreateUser,
-                            CreateDate = x.CreateDate,
-                            IsActive = x.IsActive
+                            Phone = x.Phone
                         })
                         .ToListAsync();
                 response.Data = customers;

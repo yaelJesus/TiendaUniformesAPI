@@ -74,8 +74,6 @@ namespace TiendaUniformesAPI.Controllers
                 var entity = _dbContext.Orders.FirstOrDefault(x => x.IdO == request.IdO);
                 if (entity != null)
                 {
-                    entity.IdO = request.IdO;
-                    entity.IsActive = request.IsActive;
                     entity.DeadLine = request.DeadLine;
                     entity.IdC = request.IdC;
                     entity.TotalPrice = request.TotalPrice;
@@ -117,7 +115,7 @@ namespace TiendaUniformesAPI.Controllers
             try
             {
                 var row = await _dbContext.Orders.FindAsync(idO);
-                if (row == null)
+                if (row == null || !row.IsActive)
                     response.Errors.Add("No se encontró la entidad con el ID proporcionado.");
                 else
                 {
@@ -144,7 +142,7 @@ namespace TiendaUniformesAPI.Controllers
         }
 
         [HttpGet("GetOrder")]
-        [ProducesResponseType(typeof(ApiResponse<List<Size>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<List<Order>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetOrder(int IdU)
         {
             ApiResponse<List<Order>> response = new ApiResponse<List<Order>>()
@@ -163,10 +161,7 @@ namespace TiendaUniformesAPI.Controllers
                             DateOrder = DateOnly.FromDateTime(DateTime.Now),
                             DeadLine = x.DeadLine,
                             IdC = x.IdC,
-                            TotalPrice = x.TotalPrice,
-                            CreateUser = x.CreateUser,
-                            CreateDate = x.CreateDate,
-                            IsActive = x.IsActive
+                            TotalPrice = x.TotalPrice
                         })
                         .ToListAsync();
                 response.Data = Orders;
